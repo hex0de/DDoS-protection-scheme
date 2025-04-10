@@ -228,7 +228,7 @@
 
 ---
 
-** 2. Брандмауэр Windows:
+## 2. Брандмауэр Windows:
 
 - Закройте ненужные порты (RDP, SMB для публичного доступа).
 
@@ -242,15 +242,15 @@ New-NetFirewallRule -DisplayName "Block DDoS IP" -Direction Inbound -RemoteAddre
 
 ---
 
-** 3. Веб-сервер (IIS):
+## 3. Веб-сервер (IIS):
 
-** Dynamic IP Restrictions (встроено в IIS):
+**Dynamic IP Restrictions (встроено в IIS):**
 
 - Лимит запросов: 20 запросов/сек с одного IP.
 
 - Блокировка при превышении лимита.
 
-** URL Rewrite Module для фильтрации:
+**URL Rewrite Module для фильтрации:**
  
 - Блокировка по User-Agent (например, *nmap*, *sqlmap*).
 
@@ -266,7 +266,7 @@ New-NetFirewallRule -DisplayName "Block DDoS IP" -Direction Inbound -RemoteAddre
 </rule>
 ```
 ---
-**  4. Apache на Windows (если используется):
+## 4. Apache на Windows (если используется):
 
 - Установите ModSecurity и OWASP Core Rule Set.
 
@@ -282,13 +282,13 @@ New-NetFirewallRule -DisplayName "Block DDoS IP" -Direction Inbound -RemoteAddre
 </IfModule>
 ```
 ---
-** 5. Балансировка нагрузки:
+## 5. Балансировка нагрузки:
 
 - Для IIS: Application Request Routing (ARR) + Web Farm Framework.
 
 - Для Apache: mod_proxy_balancer или HAProxy.
 
-** 6. Автоматическая блокировка IP:
+## 6. Автоматическая блокировка IP:
 
 - PowerShell-скрипт на основе логов:
 
@@ -301,7 +301,7 @@ foreach ($ip in $badIPs) {
 }
 ```
 ---
-** 7. База данных:
+## 7. База данных:
 
 - Для SQL Server:
 
@@ -312,7 +312,7 @@ foreach ($ip in $badIPs) {
 - Настройте брандмауэр: только порт 1433 и только для IP веб-сервера.
 ---
 
-** 8. Мониторинг:
+## 8. Мониторинг:
 
 - Event Viewer → Фильтруйте логи по кодам событий:
 
@@ -329,13 +329,13 @@ foreach ($ip in $badIPs) {
 
 - Резервные копии: Используйте Veeam Agent или Windows Server Backup.
 
-** RDP-защита:
+**RDP-защита:**
 
 - Смените порт RDP с 3389 на случайный.
 
 - Используйте VPN (например, OpenVPN) вместо прямого доступа к RDP.
 
-** Антивирус: Windows Defender Advanced Threat Protection или Kaspersky Endpoint Security.
+**Антивирус: Windows Defender Advanced Threat Protection или Kaspersky Endpoint Security.
 
 ---
 ##  Важно:
@@ -345,3 +345,4 @@ foreach ($ip in $badIPs) {
 - Для сложных атак (например, UDP-флуд) облачный фильтр обязателен, так как Windows-брандмауэр не справится с объемным трафиком.
 
 - Регулярно проверяйте конфигурацию через Microsoft Baseline Security Analyzer (MBSA).
+---
