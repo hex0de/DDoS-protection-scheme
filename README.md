@@ -292,14 +292,14 @@ New-NetFirewallRule -DisplayName "Block DDoS IP" -Direction Inbound -RemoteAddre
 
 - PowerShell-скрипт на основе логов:
 
-```
+
 # Анализ логов IIS на предмет частых запросов
 $logPath = "C:\inetpub\logs\LogFiles\W3SVC1\u_ex*.log"
 $badIPs = Get-Content $logPath | Select-String -Pattern "POST /wp-login.php" | Group-Object -Property IP | Where-Object { $_.Count -gt 50 } | Select-Object -ExpandProperty Name
 foreach ($ip in $badIPs) {
   New-NetFirewallRule -DisplayName "Block $ip" -Direction Inbound -RemoteAddress $ip -Action Block
 }
-```
+
 ---
 ## 7. База данных:
 
@@ -335,7 +335,7 @@ foreach ($ip in $badIPs) {
 
 - Используйте VPN (например, OpenVPN) вместо прямого доступа к RDP.
 
-**Антивирус: Windows Defender Advanced Threat Protection или Kaspersky Endpoint Security.
+**Антивирус: Windows Defender Advanced Threat Protection или Kaspersky Endpoint Security.**
 
 ---
 ##  Важно:
