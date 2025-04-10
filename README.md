@@ -208,6 +208,7 @@
 │  • Cloudflare Analytics      │  ← Отчеты об атаках
 └──────────────────────────────┘
 ```
+
 ---
 ## Подробное описание для Windows/IIS:
 
@@ -225,6 +226,8 @@
 (ip.src in {192.0.2.0/24 2001:db8::/32})
 ```
 
+---
+
 ** 2. Брандмауэр Windows:
 
 - Закройте ненужные порты (RDP, SMB для публичного доступа).
@@ -234,7 +237,10 @@
 ```
 New-NetFirewallRule -DisplayName "Block DDoS IP" -Direction Inbound -RemoteAddress 123.45.67.89 -Action Block
 ```
+
 - Используйте Windows Defender с включенной защитой от сетевых атак.
+
+---
 
 ** 3. Веб-сервер (IIS):
 
@@ -259,6 +265,7 @@ New-NetFirewallRule -DisplayName "Block DDoS IP" -Direction Inbound -RemoteAddre
   <action type="AbortRequest" />
 </rule>
 ```
+---
 **  4. Apache на Windows (если используется):
 
 - Установите ModSecurity и OWASP Core Rule Set.
@@ -274,7 +281,7 @@ New-NetFirewallRule -DisplayName "Block DDoS IP" -Direction Inbound -RemoteAddre
   DOSBlockingPeriod 3600
 </IfModule>
 ```
-
+---
 ** 5. Балансировка нагрузки:
 
 - Для IIS: Application Request Routing (ARR) + Web Farm Framework.
@@ -293,7 +300,7 @@ foreach ($ip in $badIPs) {
   New-NetFirewallRule -DisplayName "Block $ip" -Direction Inbound -RemoteAddress $ip -Action Block
 }
 ```
-
+---
 ** 7. База данных:
 
 - Для SQL Server:
@@ -303,6 +310,7 @@ foreach ($ip in $badIPs) {
 - Используйте Windows Authentication.
 
 - Настройте брандмауэр: только порт 1433 и только для IP веб-сервера.
+---
 
 ** 8. Мониторинг:
 
@@ -314,6 +322,7 @@ foreach ($ip in $badIPs) {
 
 - PRTG Network Monitor: отслеживание нагрузки на сеть и CPU.
 
+---
 ##  Дополнительные меры:
 
 - Обновления: Включите автоматическое обновление Windows + веб-сервера.
@@ -328,6 +337,7 @@ foreach ($ip in $badIPs) {
 
 ** Антивирус: Windows Defender Advanced Threat Protection или Kaspersky Endpoint Security.
 
+---
 ##  Важно:
 
 - Если используется Apache, многие инструменты (например, ModSecurity) работают аналогично Linux.
