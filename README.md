@@ -208,4 +208,130 @@
 │  • Cloudflare Analytics      │  ← Отчеты об атаках
 └──────────────────────────────┘
 ```
+---
+## Подробное описание для Windows/IIS:
 
+## 1. Облачный фильтр (Cloudflare):
+
+- Обязательно для защиты от объемных DDoS (Layer 3/4).
+
+- Настройте SSL/TLS в режиме "Flexible" (если нет сертификата на сервере).
+
+- Используйте Firewall Rules для блокировки:
+
+```
+(http.user_agent contains "BadBot") 
+или 
+(ip.src in {192.0.2.0/24 2001:db8::/32})
+```
+
+** 2. Брандмауэр Windows:
+
+- Закройте ненужные порты (RDP, SMB для публичного доступа).
+
+- Пример PowerShell для блокировки IP:
+
+```
+New-NetFirewallRule -DisplayName "Block DDoS IP" -Direction Inbound -RemoteAddress 123.45.67.89 -Action Block
+```
+- Используйте Windows Defender с включенной защитой от сетевых атак.
+
+** 3. Веб-сервер (IIS):
+
+** Dynamic IP Restrictions (встроено в IIS):
+
+- Лимит запросов: 20 запросов/сек с одного IP.
+
+- Блокировка при превышении лимита.
+
+** URL Rewrite Module для фильтрации:
+ 
+- Блокировка по User-Agent (например, *nmap*, *sqlmap*).
+
+- Пример правила:
+
+```
+<rule name="Block Bad Bots">
+  <match url=".*" />
+  <conditions>
+    <add input="{HTTP_USER_AGENT}" pattern="bot|crawler|spider" />
+  </conditions>
+  <action type="AbortRequest" />
+</rule>
+```
+**  4. Apache на Windows (если используется):
+
+- Установите ModSecurity и OWASP Core Rule Set.
+
+- Настройте модуль mod_evasive для защиты от DDoS:
+```
+<IfModule mod_evasive24.c>
+  DOSHashTableSize 3097
+  DOSPageCount 2
+  DOSSiteCount 50
+  DOSPageInterval 1
+  DOSSiteInterval 1
+  DOSBlockingPeriod 3600
+</IfModule>
+```
+
+** 5. Балансировка нагрузки:
+
+- Для IIS: Application Request Routing (ARR) + Web Farm Framework.
+
+- Для Apache: mod_proxy_balancer или HAProxy.
+
+** 6. Автоматическая блокировка IP:
+
+- PowerShell-скрипт на основе логов:
+
+```
+# Анализ логов IIS на предмет частых запросов
+$logPath = "C:\inetpub\logs\LogFiles\W3SVC1\u_ex*.log"
+$badIPs = Get-Content $logPath | Select-String -Pattern "POST /wp-login.php" | Group-Object -Property IP | Where-Object { $_.Count -gt 50 } | Select-Object -ExpandProperty Name
+foreach ($ip in $badIPs) {
+  New-NetFirewallRule -DisplayName "Block $ip" -Direction Inbound -RemoteAddress $ip -Action Block
+}
+```
+
+** 7. База данных:
+
+- Для SQL Server:
+
+- Отключите доступ по SA.
+
+- Используйте Windows Authentication.
+
+- Настройте брандмауэр: только порт 1433 и только для IP веб-сервера.
+
+** 8. Мониторинг:
+
+- Event Viewer → Фильтруйте логи по кодам событий:
+
+- 4625 (неудачные попытки входа).
+
+- 5031 (перегрузка IIS).
+
+- PRTG Network Monitor: отслеживание нагрузки на сеть и CPU.
+
+##  Дополнительные меры:
+
+- Обновления: Включите автоматическое обновление Windows + веб-сервера.
+
+- Резервные копии: Используйте Veeam Agent или Windows Server Backup.
+
+** RDP-защита:
+
+- Смените порт RDP с 3389 на случайный.
+
+- Используйте VPN (например, OpenVPN) вместо прямого доступа к RDP.
+
+** Антивирус: Windows Defender Advanced Threat Protection или Kaspersky Endpoint Security.
+
+##  Важно:
+
+- Если используется Apache, многие инструменты (например, ModSecurity) работают аналогично Linux.
+
+- Для сложных атак (например, UDP-флуд) облачный фильтр обязателен, так как Windows-брандмауэр не справится с объемным трафиком.
+
+- Регулярно проверяйте конфигурацию через Microsoft Baseline Security Analyzer (MBSA).
