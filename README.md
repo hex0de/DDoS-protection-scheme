@@ -234,7 +234,7 @@
 
 - Пример PowerShell для блокировки IP:
 
-```
+```powershell
 New-NetFirewallRule -DisplayName "Block DDoS IP" -Direction Inbound -RemoteAddress 123.45.67.89 -Action Block
 ```
 
@@ -256,7 +256,7 @@ New-NetFirewallRule -DisplayName "Block DDoS IP" -Direction Inbound -RemoteAddre
 
 - Пример правила:
 
-```
+```apache
 <rule name="Block Bad Bots">
   <match url=".*" />
   <conditions>
@@ -271,7 +271,7 @@ New-NetFirewallRule -DisplayName "Block DDoS IP" -Direction Inbound -RemoteAddre
 - Установите ModSecurity и OWASP Core Rule Set.
 
 - Настройте модуль mod_evasive для защиты от DDoS:
-```
+```apache
 <IfModule mod_evasive24.c>
   DOSHashTableSize 3097
   DOSPageCount 2
@@ -292,7 +292,6 @@ New-NetFirewallRule -DisplayName "Block DDoS IP" -Direction Inbound -RemoteAddre
 
 - PowerShell-скрипт на основе логов:
 
-<details>
 ```powershell
 # Анализ логов IIS на предмет частых запросов
 $logPath = "C:\inetpub\logs\LogFiles\W3SVC1\u_ex*.log"
@@ -300,7 +299,8 @@ $badIPs = Get-Content $logPath | Select-String -Pattern "POST /wp-login.php" | G
 foreach ($ip in $badIPs) {
   New-NetFirewallRule -DisplayName "Block $ip" -Direction Inbound -RemoteAddress $ip -Action Block
 }
-</details>```
+```
+
 ---
 ## 7. База данных:
 
