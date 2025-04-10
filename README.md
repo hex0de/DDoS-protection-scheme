@@ -256,7 +256,7 @@ New-NetFirewallRule -DisplayName "Block DDoS IP" -Direction Inbound -RemoteAddre
 
 - Пример правила:
 
-```apache
+```xml
 <rule name="Block Bad Bots">
   <match url=".*" />
   <conditions>
