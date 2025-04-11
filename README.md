@@ -345,5 +345,5 @@ foreach ($ip in $badIPs) {
 
 - Для сложных атак (например, UDP-флуд) облачный фильтр обязателен, так как Windows-брандмауэр не справится с объемным трафиком.
 
-- Регулярно проверяйте конфигурацию через Microsoft Baseline Security Analyzer (MBSA).
+- Регулярно проверять конфигурацию через Microsoft Baseline Security Analyzer (MBSA).
 ---
